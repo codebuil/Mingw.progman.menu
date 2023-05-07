@@ -66,7 +66,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     HDC hdc;
     PAINTSTRUCT ps;
     RECT rect;
-    char *menuss[4];
+    char *menuss[50];
     char startStr[1025];
     time_t rawtime;
     struct tm *timeinfo;
@@ -74,7 +74,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     menuss[0]="calc.exe";
     menuss[1]="notepad.exe";
     menuss[2]="write.exe";
-    menuss[3]="cmd.exe";
+    menuss[3]="keyboard.exe";
+    menuss[4]="cmd.exe";
+    menuss[5]="paint.exe";
+    menuss[6]="control.exe";
+    menuss[7]="calendar.exe";
+
    
     char buffer[MAX_BUFFER_SIZE];
 
@@ -84,10 +89,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         case WM_CREATE:
         
-       for(nn=0;nn<4;nn++){
+       for(nn=0;nn<8;nn++){
         int nnn=40+nn;
         tthew[nn] = CreateWindow("BUTTON", menuss[nn], WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-            (nn-(nn/6))*100+5,(nn/6)*30+5, 90, 30,  hwnd, (HMENU)nnn, GetModuleHandle(NULL), NULL);
+            (nn-(nn/6)*6)*100+5,(nn/6)*30+5, 90, 30,  hwnd, (HMENU)nnn, GetModuleHandle(NULL), NULL);
        }
                 
                 
@@ -96,7 +101,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
         case WM_COMMAND:
             iiii=(int)(LOWORD(wParam));
-            if(iiii>=40 && iiii<=44){
+            if(iiii>=40 && iiii<=40+7){
                 iiii=iiii-40;
                 sprintf(startStr,"%d",iiii);
                  SetWindowText(hwnd,menuss[iiii] );
