@@ -4,11 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define IDM_SUBMENU2 1002
+
 #define TIMER_ID 1
 #define TIMER_INTERVAL 10000
 #define MAX_BUFFER_SIZE 1024
 #define lines 10
-static HWND hStartEdit,hEndEdit,hButton,hButton2,thew,tthew[lines];
+static HMENU hStartEdit,hEndEdit,hButton,hButton2,thew,tthew[lines];
 int xx = 2; // Define a posição horizontal
 int yy = 2; // Define a posição vertical
  int nn,nnn;   
@@ -18,7 +20,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
 {
-    static TCHAR szAppName[] = TEXT("Temporizador");
+    static TCHAR szAppName[] = TEXT("program");
     HWND hwnd;
     MSG msg;
     WNDCLASS wndclass;
@@ -32,7 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-    wndclass.lpszMenuName = NULL;
+    wndclass.lpszMenuName = szAppName;
     wndclass.lpszClassName = szAppName;
 
     if (!RegisterClass(&wndclass))
@@ -74,9 +76,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     menuss[0]="calc.exe";
     menuss[1]="notepad.exe";
     menuss[2]="write.exe";
-    menuss[3]="keyboard.exe";
+    menuss[3]="explorer.exe";
     menuss[4]="cmd.exe";
-    menuss[5]="paint.exe";
+    menuss[5]="pbrush.exe";
     menuss[6]="control.exe";
     menuss[7]="calendar.exe";
 
@@ -88,26 +90,35 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
         case WM_CREATE:
-        
+         hStartEdit = CreateMenu();
+         hEndEdit=CreatePopupMenu();
+         AppendMenu(hStartEdit, MF_STRING | MF_POPUP, (UINT_PTR)hEndEdit, "progman");
+
        for(nn=0;nn<8;nn++){
         int nnn=40+nn;
-        tthew[nn] = CreateWindow("BUTTON", menuss[nn], WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-            (nn-(nn/6)*6)*100+5,(nn/6)*30+5, 90, 30,  hwnd, (HMENU)nnn, GetModuleHandle(NULL), NULL);
+        AppendMenu(hEndEdit, MF_STRING, nnn,menuss[nn]); 
+        //CreateWindow(MENU, menuss[nn], WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+          //  (nn-(nn/6)*6)*100+5,(nn/6)*30+5, 90, 30,  hwnd, (HMENU)nnn, GetModuleHandle(NULL), NULL);
+        //tthew[nn] = CreateWindow(MENU, menuss[nn], WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+          //  (nn-(nn/6)*6)*100+5,(nn/6)*30+5, 90, 30,  hwnd, (HMENU)nnn, GetModuleHandle(NULL), NULL);
        }
-                
+          SetMenu(hwnd, hStartEdit);      
                 
             
         
         break;
         case WM_COMMAND:
+        
+        
             iiii=(int)(LOWORD(wParam));
-            if(iiii>=40 && iiii<=40+7){
+            if(iiii>=40 && iiii<=47){
                 iiii=iiii-40;
                 sprintf(startStr,"%d",iiii);
                  SetWindowText(hwnd,menuss[iiii] );
                  
                 system(menuss[iiii]);
             }
+            
             
            
     break;   
@@ -135,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     
 
     case WM_DESTROY:
-        KillTimer(hwnd, TIMER_ID);
+       
         PostQuitMessage(0);
         break;
 
